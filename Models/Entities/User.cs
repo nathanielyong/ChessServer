@@ -10,22 +10,14 @@ namespace ChessServer.Models.Entities
         public string Email { get; set; }
         public string HashedPassword { get; set; }
         public DateTime DateJoined { get; set; }
-        public int NumGamesPlayed
-        {
-            get
-            {
-                int whiteGamesCount = WhiteChessGames == null ? 0 : WhiteChessGames.Count;
-                int blackGamesCount = BlackChessGames == null ? 0 : BlackChessGames.Count;
-
-                return whiteGamesCount + blackGamesCount;
-            }
-        }
+        public int NumGamesPlayed { get; set; }
         public int Wins {  get; set; }
         public int Losses {  get; set; }
         public int Draws {  get; set; }
         public int Rating { get; set; }
         public ICollection<ChessGame> WhiteChessGames { get; set; }
         public ICollection<ChessGame> BlackChessGames { get; set; } 
+        public int? LiveChessGameId { get; set; }
         public User()
         {
         }
@@ -36,11 +28,12 @@ namespace ChessServer.Models.Entities
             HashedPassword = hashedPassword;
             WhiteChessGames = new List<ChessGame>();
             BlackChessGames = new List<ChessGame>();
-            DateJoined = DateTime.Now;
+            DateJoined = DateTime.UtcNow;
             Wins = 0;
             Losses = 0;
             Draws = 0;
             Rating = 1200;
+            LiveChessGameId = null;
         }
     }
 }

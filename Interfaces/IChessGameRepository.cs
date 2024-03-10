@@ -4,10 +4,10 @@ namespace ChessServer.Interfaces
 {
     public interface IChessGameRepository
     {
-        ICollection<ChessGame> GetChessGames();
-        ICollection<ChessGame> GetWhiteChessGamesByUserId(int userId);
-        ICollection<ChessGame> GetBlackChessGamesByUserId(int userId);
-        ICollection<ChessGame> GetChessGamesByUserId(int userId);
+        ICollection<ChessGame> GetAllChessGames();
+        ICollection<ChessGame> GetWhiteChessGamesByUsername(string username);
+        ICollection<ChessGame> GetBlackChessGamesByUsername(string username);
+        ICollection<ChessGame> GetChessGamesByUsername(string username);
         ChessGame GetChessGameById(int id);
         bool CreateChessGame(ChessGame chessGame);
         bool Save();

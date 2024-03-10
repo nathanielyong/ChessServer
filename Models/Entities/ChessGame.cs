@@ -14,8 +14,8 @@ namespace ChessServer.Models.Entities
         public DateTime DateStarted { get; set; }
         public DateTime DateFinished { get; set; }
         public Result Result { get; set; }
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan Increment { get; set; }
+        public int StartTime { get; set; }
+        public int Increment { get; set; }
         public string PGN { get; set; }
 
         public ChessGame()
@@ -23,7 +23,7 @@ namespace ChessServer.Models.Entities
 
         }
         public ChessGame(int whitePlayerId, string whitePlayerUsername, int blackPlayerId, string blackPlayerUsername,
-                         DateTime dateStarted, DateTime dateFinished, Result result, TimeSpan startTime, TimeSpan increment, string pgn)
+                         DateTime dateStarted, DateTime dateFinished, Result result, int startTime, int increment, string pgn)
         {
             WhitePlayerId = whitePlayerId;
             WhitePlayerUsername = whitePlayerUsername;

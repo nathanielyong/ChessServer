@@ -12,6 +12,8 @@ namespace ChessServer.Data
         public DbSet<User> Users { get; set; }
         public DbSet<ChessGame> ChessGames { get; set; }
 
+        public DbSet<LiveChessGame> LiveChessGames { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ChessGame>()

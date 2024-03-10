@@ -1,8 +1,11 @@
 ﻿using ChessServer.Interfaces;
 using ChessServer.Models.Entities;
 using ChessServer.Models.Requests;
+using ChessServer.Models.Responses;
 using ChessServer.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChessServer.Controllers
 {
@@ -18,60 +21,65 @@ namespace ChessServer.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet("getChessGames")]
+        [HttpGet("myGames"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGame>))]
-        public IActionResult GetChessGames()
+        public IActionResult GetMyGames()
         {
-            var chessGames = _chessGameRepository.GetChessGames();
-            if (chessGames == null || !chessGames.Any())
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var chessGames = _chessGameRepository.GetChessGamesByUsername(username);
+            List<ChessGameResponse> response = new List<ChessGameResponse>();
+            foreach (var chessGame in chessGames)
             {
-                return NotFound();
+                var chessGameResponse = new ChessGameResponse(chessGame);
+                response.Add(chessGameResponse);
             }
-
-            return Ok(chessGames);
+            return Ok(response);
         }
 
-        [HttpGet("user/{userId:int}/whiteGames")]
+        [HttpGet("user/{username}/whiteGames")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGame>))]
-        public IActionResult GetWhiteChessGamesByUserId(int userId)
+        public IActionResult GetWhiteChessGamesByUsername(string username)
         {
-            var chessGames = _chessGameRepository.GetWhiteChessGamesByUserId(userId);
-            if (chessGames == null || !chessGames.Any())
+            var chessGames = _chessGameRepository.GetWhiteChessGamesByUsername(username);
+            List<ChessGameResponse> response = new List<ChessGameResponse>();
+            foreach (var chessGame in chessGames)
             {
-                return NotFound();
+                var chessGameResponse = new ChessGameResponse(chessGame);
+                response.Add(chessGameResponse);
             }
-
-            return Ok(chessGames);
+            return Ok(response);
         }
 
-        [HttpGet("user/{userId:int}/blackGames")]
+        [HttpGet("user/{username}/blackGames")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGame>))]
-        public IActionResult GetBlackChessGamesByUserId(int userId)
+        public IActionResult GetBlackChessGamesByUserId(string username)
         {
-            var chessGames = _chessGameRepository.GetBlackChessGamesByUserId(userId);
-            if (chessGames == null || !chessGames.Any())
+            var chessGames = _chessGameRepository.GetBlackChessGamesByUsername(username);
+            List<ChessGameResponse> response = new List<ChessGameResponse>();
+            foreach (var chessGame in chessGames)
             {
-                return NotFound();
+                var chessGameResponse = new ChessGameResponse(chessGame);
+                response.Add(chessGameResponse);
             }
-             
-            return Ok(chessGames);
+            return Ok(response);
         }
 
-        [HttpGet("user/{userId:int}/games")]
+        [HttpGet("user/{username}/games")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGame>))]
-        public IActionResult GetChessGamesByUserId(int userId)
+        public IActionResult GetChessGamesByUsername(string username)
         {
-            var chessGames = _chessGameRepository.GetChessGamesByUserId(userId);
-            if (chessGames == null || !chessGames.Any())
+            var chessGames = _chessGameRepository.GetChessGamesByUsername(username);
+            List<ChessGameResponse> response = new List<ChessGameResponse>();
+            foreach (var chessGame in chessGames)
             {
-                return NotFound();
+                var chessGameResponse = new ChessGameResponse(chessGame);
+                response.Add(chessGameResponse);
             }
-
-            return Ok(chessGames);
+            return Ok(response);
         }
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGame>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ChessGameResponse>))]
         public IActionResult GetChessGameById(int id)
         {
             var chessGame = _chessGameRepository.GetChessGameById(id);
@@ -79,8 +87,8 @@ namespace ChessServer.Controllers
             {
                 return NotFound();
             }
-
-            return Ok(chessGame);
+            ChessGameResponse chessGameResponse = new ChessGameResponse(chessGame);
+            return Ok(chessGameResponse);
         }
 
         [HttpPost("createGame")]
@@ -88,10 +96,7 @@ namespace ChessServer.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors)
-                                              .Select(e => e.ErrorMessage)
-                                              .ToList();
-                return BadRequest(errors);
+                return BadRequest();
             }
             User whitePlayer = _userRepository.GetUserByUsername(request.WhitePlayerUsername);
             User blackPlayer = _userRepository.GetUserByUsername(request.BlackPlayerUsername);
@@ -102,10 +107,11 @@ namespace ChessServer.Controllers
             }
 
             ChessGame chessGame = new ChessGame(whitePlayer.Id, whitePlayer.Username, blackPlayer.Id, blackPlayer.Username,
-                request.DateStarted, request.DateFinished, request.Result, new TimeSpan(0, request.StartTime, 0), new TimeSpan(0, 0, request.Increment), request.PGN);
+                request.DateStarted, request.DateFinished, request.Result, request.StartTime, request.Increment, request.PGN);
+            
             if (_chessGameRepository.CreateChessGame(chessGame))
             {
-                return Ok(chessGame);
+                return Created();
             }
             else
             {

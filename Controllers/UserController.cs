@@ -1,6 +1,8 @@
 ﻿using ChessServer.Interfaces;
 using ChessServer.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ChessServer.Controllers
 {
@@ -14,35 +16,31 @@ namespace ChessServer.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet("getUsers")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
-        public IActionResult GetUsers()
+        [HttpGet("/profile"), Authorize]
+        public IActionResult GetProfile()
         {
-            var users = _userRepository.GetUsers();
-            if (users == null || !users.Any())
-            {
-                return NotFound();
-            }
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var user = _userRepository.GetUserByUsername(username);
 
-            return Ok(users);
+            var user_info = new
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Rating = user.Rating,
+                NumGamesPlayed = user.NumGamesPlayed,
+                Wins = user.Wins,
+                Losses = user.Losses,
+                Draws = user.Draws,
+                DatedJoined = user.DateJoined,
+                LiveChessGameId = user.LiveChessGameId
+            };
+
+            return Ok(user_info);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("/getStats/{username}")]
         [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUserById(int id)
-        {
-            var user = _userRepository.GetUserById(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
-        }
-
-        [HttpGet("/username/{username}")]
-        [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUserByUsername(string username)
+        public IActionResult GetUserStats(string username)
         {
             var user = _userRepository.GetUserByUsername(username);
             if (user == null)
@@ -50,20 +48,18 @@ namespace ChessServer.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
-        }
-
-        [HttpGet("/email/{email}")]
-        [ProducesResponseType(200, Type = typeof(User))]
-        public IActionResult GetUserByEmail(string email)
-        {
-            var user = _userRepository.GetUserByEmail(email);
-            if (user == null)
+            var stats = new
             {
-                return NotFound();
-            }
-
-            return Ok(user);
+                Username = user.Username,
+                Rating = user.Rating,
+                NumGamesPlayed = user.NumGamesPlayed,
+                Wins = user.Wins,
+                Losses = user.Losses,
+                Draws = user.Draws,
+                DatedJoined = user.DateJoined,
+                LiveChessGameId = user.LiveChessGameId
+            };
+            return Ok(stats);
         }
     }
 }

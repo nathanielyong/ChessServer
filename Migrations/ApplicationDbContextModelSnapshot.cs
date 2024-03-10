@@ -43,8 +43,8 @@ namespace ChessServer.Migrations
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan>("Increment")
-                        .HasColumnType("time");
+                    b.Property<int>("Increment")
+                        .HasColumnType("int");
 
                     b.Property<string>("PGN")
                         .IsRequired()
@@ -53,8 +53,8 @@ namespace ChessServer.Migrations
                     b.Property<int>("Result")
                         .HasColumnType("int");
 
-                    b.Property<TimeSpan>("StartTime")
-                        .HasColumnType("time");
+                    b.Property<int>("StartTime")
+                        .HasColumnType("int");
 
                     b.Property<int>("WhitePlayerId")
                         .HasColumnType("int");
@@ -70,6 +70,68 @@ namespace ChessServer.Migrations
                     b.HasIndex("WhitePlayerId");
 
                     b.ToTable("ChessGames");
+                });
+
+            modelBuilder.Entity("ChessServer.Models.Entities.LiveChessGame", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BlackPlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BlackPlayerUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("BlackTimeRemaining")
+                        .HasColumnType("time");
+
+                    b.Property<string>("CurrentPositionFen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateLastMove")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateStarted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("GameEndReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Increment")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsGameOver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsWhiteTurn")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PGN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartTime")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WhitePlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("WhitePlayerUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("WhiteTimeRemaining")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LiveChessGames");
                 });
 
             modelBuilder.Entity("ChessServer.Models.Entities.User", b =>
@@ -94,7 +156,13 @@ namespace ChessServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("LiveChessGameId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Losses")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumGamesPlayed")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")

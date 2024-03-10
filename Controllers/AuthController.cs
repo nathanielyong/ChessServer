@@ -20,7 +20,7 @@ namespace ChessServer.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequest request)
+        public IActionResult Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -41,7 +41,7 @@ namespace ChessServer.Controllers
             User user = new User(request.Username, request.Email, hashedPassword);
             if (_userRepository.CreateUser(user))
             {
-                return Ok(user);
+                return Ok();
             } else
             {
                 return BadRequest();
@@ -49,7 +49,7 @@ namespace ChessServer.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginRequest request)
+        public IActionResult Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -59,13 +59,9 @@ namespace ChessServer.Controllers
                 return BadRequest(errors);
             }
             User user = _userRepository.GetUserByUsername(request.Username);
-            if (user == null)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.HashedPassword))
             {
-                return BadRequest("Username not found");
-            }
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.HashedPassword))
-            {
-                return BadRequest("The password you entered is incorrect");
+                return BadRequest("Username or password incorrect");
             }
 
             string token = CreateToken(user);
