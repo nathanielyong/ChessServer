@@ -3,7 +3,8 @@
 This Chess Server API is built using ASP.NET Core Web API and provides endpoints for managing chess games, live chess games, and players. This project makes use of clean architecture and SOLID principles by dividing the application into different layers and making use of dependency injection. 
 
 The API was deployed to Azure using Azure App Service and Azure SQL Database.
-You can test it out here: chessservernathan.azurewebsites.net
+
+You can test out endpoints using this URL: [chessservernathan.azurewebsites.net]
 
 ## Features
 
