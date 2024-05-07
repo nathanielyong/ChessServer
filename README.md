@@ -4,7 +4,7 @@ This Chess Server API is built using ASP.NET Core Web API and provides endpoints
 
 The API was deployed to Azure using Azure App Service and Azure SQL Database.
 
-You can test out endpoints using this URL: [chessservernathan.azurewebsites.net]
+You can test out endpoints using this URL: [](chessservernathan.azurewebsites.net)
 
 ## Features
 
