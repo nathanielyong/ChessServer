@@ -43,15 +43,23 @@ namespace ChessServer.Migrations
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("GameEndReason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Increment")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Moves")
                         .HasColumnType("int");
 
                     b.Property<string>("PGN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Result")
-                        .HasColumnType("int");
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartTime")
                         .HasColumnType("int");
@@ -106,14 +114,17 @@ namespace ChessServer.Migrations
                     b.Property<int>("Increment")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsGameOver")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsWhiteTurn")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MoveCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("PGN")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Result")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StartTime")

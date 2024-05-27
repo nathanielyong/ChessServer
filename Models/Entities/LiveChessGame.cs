@@ -17,10 +17,11 @@ namespace ChessServer.Models.Entities
         public TimeSpan BlackTimeRemaining { get; set; }
         public bool IsWhiteTurn { get; set; }
         public DateTime DateLastMove { get; set; }
-        public bool IsGameOver { get; set; }
+        public string? Result { get; set; }
         public string? GameEndReason { get; set; }
         public string CurrentPositionFen {  get; set; }
         public string PGN { get; set; }
+        public int MoveCount { get; set; }
 
         public LiveChessGame()
         { 
@@ -38,10 +39,11 @@ namespace ChessServer.Models.Entities
             WhiteTimeRemaining = new TimeSpan(0, startTime, 0);
             BlackTimeRemaining = new TimeSpan(0, startTime, 0);
             IsWhiteTurn = true;
-            IsGameOver = false;
+            Result = null;
             DateLastMove = DateStarted;
             CurrentPositionFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
             PGN = "";
+            MoveCount = 1;
         }
     }
 }

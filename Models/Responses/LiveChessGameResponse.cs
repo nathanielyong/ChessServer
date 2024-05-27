@@ -18,11 +18,11 @@ namespace ChessServer.Models.Responses
             public int BlackMinutesRemaining {  get; set; }
             public int BlackSecondsRemaining { get; set; }
             public bool IsWhiteTurn {  get; set; }
-            public bool IsGameOver {  get; set; }
             public string GameEndReason { get; set; }
             public DateTime DateLastMove {  get; set; }
             public string CurrentPositionFEN {  get; set; }
             public string PGN { get; set; }
+            public int MoveCount {  get; set; }
             public ICollection<string> LegalMoves { get; set; }
 
             public GameStateResponse(LiveChessGame liveChessGame)
@@ -39,11 +39,11 @@ namespace ChessServer.Models.Responses
                 BlackMinutesRemaining = blackTimeRemaining.Minutes;
                 BlackSecondsRemaining = blackTimeRemaining.Seconds;
                 IsWhiteTurn = liveChessGame.IsWhiteTurn;
-                IsGameOver = liveChessGame.IsGameOver;
                 GameEndReason = liveChessGame.GameEndReason;
                 DateLastMove = liveChessGame.DateLastMove;
                 CurrentPositionFEN = liveChessGame.CurrentPositionFen;
                 PGN = liveChessGame.PGN;
+                MoveCount = liveChessGame.MoveCount;
                 ChessBoard board = ChessBoard.LoadFromFen(CurrentPositionFEN);
                 List<string> moves = new List<string>();
                 foreach (var move in board.Moves())

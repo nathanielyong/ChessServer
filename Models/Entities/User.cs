@@ -29,6 +29,7 @@ namespace ChessServer.Models.Entities
             WhiteChessGames = new List<ChessGame>();
             BlackChessGames = new List<ChessGame>();
             DateJoined = DateTime.UtcNow;
+            NumGamesPlayed = 0;
             Wins = 0;
             Losses = 0;
             Draws = 0;

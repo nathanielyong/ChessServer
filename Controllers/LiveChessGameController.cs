@@ -50,6 +50,18 @@ namespace ChessServer.Controllers
             return Ok(response);
         }
 
+        [HttpPost("resignGame/"), Authorize]
+        public IActionResult ResignGame()
+        {
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            var response = _liveChessGameService.ResignGame(username);
+            if (response == null)
+            {
+                return BadRequest();
+            }
+            return Ok(response);
+        }
+
         [HttpPost("newGame/"), Authorize]
         public IActionResult CreateNewGame(CreateLiveChessGameRequest request)
         {

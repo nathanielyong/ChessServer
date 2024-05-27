@@ -9,7 +9,7 @@ namespace ChessServer.Models.Responses
         public string BlackPlayerUsername { get; set; }
         public DateTime DateStarted { get; set; }
         public DateTime DateFinished { get; set; }
-        public Result Result { get; set; }
+        public string Result { get; set; }
         [Range(1, 120)]
         public int StartTime { get; set; }
         [Range(0, 60)]

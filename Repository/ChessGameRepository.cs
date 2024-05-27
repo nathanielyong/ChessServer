@@ -37,18 +37,16 @@ namespace ChessServer.Repository
         {
             return _context.ChessGames.FirstOrDefault(c => c.Id == id);
         }
-        public bool CreateChessGame(ChessGame chessGame)
+        public bool CreateChessGame(ChessGame chessGame, User whitePlayer, User blackPlayer)
         { 
             _context.Add(chessGame);
-            User whitePlayer = chessGame.WhitePlayer;
-            User blackPlayer = chessGame.BlackPlayer;
             whitePlayer.NumGamesPlayed += 1;
             blackPlayer.NumGamesPlayed += 1;
-            if (chessGame.Result == Models.Result.WhiteWon)
+            if (chessGame.Result == "1-0")
             {
                 whitePlayer.Wins += 1;
                 blackPlayer.Losses += 1;
-            } else if (chessGame.Result == Models.Result.BlackWon)
+            } else if (chessGame.Result == "0-1")
             {
                 whitePlayer.Losses += 1;
                 blackPlayer.Wins += 1;

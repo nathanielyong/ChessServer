@@ -20,9 +20,10 @@ namespace ChessServer.Repository
         {
             return _context.LiveChessGames.FirstOrDefault(c => c.WhitePlayerUsername == username || c.BlackPlayerUsername == username);
         }
-        public bool FinishGame(LiveChessGame game, string gameEndReason)
+        public bool FinishGame(LiveChessGame game, string result, string gameEndReason)
         {
-            game.IsGameOver = true;
+            game.Result = result;
+            game.PGN += result;
             game.GameEndReason = gameEndReason;
             return Save();
         }
@@ -35,11 +36,15 @@ namespace ChessServer.Repository
 
         }
 
-        public bool UpdateLiveChessGame(LiveChessGame liveChessGame, string fen, string pgn)
+        public bool UpdateLiveChessGame(LiveChessGame liveChessGame, string fen, string new_move, bool increment_turn)
         {
             liveChessGame.CurrentPositionFen = fen;
-            liveChessGame.PGN = liveChessGame.PGN + pgn;
+            liveChessGame.PGN += new_move;
             liveChessGame.IsWhiteTurn = !liveChessGame.IsWhiteTurn;
+            if (increment_turn)
+            {
+                liveChessGame.MoveCount++;
+            }
             return Save();
         }
         public bool Save()

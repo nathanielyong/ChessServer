@@ -14,7 +14,11 @@ namespace ChessServer.Models.Requests
         [Required]
         public DateTime DateFinished { get; set; }
         [Required]
-        public Result Result { get; set; }
+        public string Result { get; set; }
+        [Required]
+        public string GameEndReason {  get; set; }
+        [Required]
+        public int Moves {  get; set; }
         [Required]
         [Range(1, 120)]
         public int StartTime { get; set; }
