@@ -116,9 +116,9 @@ namespace ChessServer.Services
                 User blackPlayer = _userRepository.GetUserById(liveChessGame.BlackPlayerId);
                 if (result != null)
                 {
-                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result.ToString} won by checkmate.");
+                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result.ToString()} won by checkmate.");
                     _chessGameRepository.CreateChessGame(new ChessGame(liveChessGame), whitePlayer, blackPlayer);
-                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. {result.ToString} won by checkmate.");
+                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. {result.ToString()} won by checkmate.");
                 }
                 else
                 {

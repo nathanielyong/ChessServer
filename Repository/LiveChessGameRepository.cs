@@ -25,6 +25,7 @@ namespace ChessServer.Repository
             game.Result = result;
             game.PGN += result;
             game.GameEndReason = gameEndReason;
+
             return Save();
         }
         public bool CreateLiveChessGame(LiveChessGame chessGame, User whitePlayer, User blackPlayer)
@@ -41,6 +42,7 @@ namespace ChessServer.Repository
             liveChessGame.CurrentPositionFen = fen;
             liveChessGame.PGN += new_move;
             liveChessGame.IsWhiteTurn = !liveChessGame.IsWhiteTurn;
+            liveChessGame.DateLastMove = DateTime.Now;
             if (increment_turn)
             {
                 liveChessGame.MoveCount++;
