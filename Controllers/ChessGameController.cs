@@ -107,9 +107,9 @@ namespace ChessServer.Controllers
             }
 
             ChessGame chessGame = new ChessGame(whitePlayer.Id, whitePlayer.Username, blackPlayer.Id, blackPlayer.Username,
-                request.DateStarted, request.DateFinished, request.Result, request.StartTime, request.Increment, request.PGN, request.GameEndReason, request.Moves);
+                request.DateStarted, request.DateFinished, request.Result, request.StartTime, request.Increment, request.PGN, request.GameEndReason, request.Moves, request.FinalFEN);
             
-            if (_chessGameRepository.CreateChessGame(chessGame, whitePlayer, blackPlayer))
+            if (_chessGameRepository.CreateChessGame(chessGame))
             {
                 return Created();
             }

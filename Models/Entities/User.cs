@@ -18,6 +18,7 @@ namespace ChessServer.Models.Entities
         public ICollection<ChessGame> WhiteChessGames { get; set; }
         public ICollection<ChessGame> BlackChessGames { get; set; } 
         public int? LiveChessGameId { get; set; }
+        public bool IsPlaying { get; set; }
         public User()
         {
         }
@@ -35,6 +36,7 @@ namespace ChessServer.Models.Entities
             Draws = 0;
             Rating = 1200;
             LiveChessGameId = null;
+            IsPlaying = false;
         }
     }
 }

@@ -27,5 +27,6 @@ namespace ChessServer.Models.Requests
         public int Increment { get; set; }
         [Required]
         public string PGN { get; set; }
+        public string FinalFEN {  get; set; }
     }
 }

@@ -8,9 +8,11 @@ namespace ChessServer.Repository
     public class ChessGameRepository : IChessGameRepository
     {
         private readonly ApplicationDbContext _context;
-        public ChessGameRepository(ApplicationDbContext context)
+        private readonly IUserRepository _userRepository;
+        public ChessGameRepository(ApplicationDbContext context, IUserRepository userRepository)
         {
             _context = context;
+            _userRepository = userRepository;
         }
 
         public ICollection<ChessGame> GetAllChessGames()
@@ -37,9 +39,11 @@ namespace ChessServer.Repository
         {
             return _context.ChessGames.FirstOrDefault(c => c.Id == id);
         }
-        public bool CreateChessGame(ChessGame chessGame, User whitePlayer, User blackPlayer)
+        public bool CreateChessGame(ChessGame chessGame)
         { 
             _context.Add(chessGame);
+            User whitePlayer = chessGame.WhitePlayer;
+            User blackPlayer = chessGame.BlackPlayer;
             whitePlayer.NumGamesPlayed += 1;
             blackPlayer.NumGamesPlayed += 1;
             if (chessGame.Result == "1-0")

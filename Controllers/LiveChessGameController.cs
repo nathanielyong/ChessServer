@@ -72,14 +72,18 @@ namespace ChessServer.Controllers
             User opponent = _userRepository.GetUserByUsername(request.OpponentUsername);
             if (opponent == null) 
             { 
-                return BadRequest(new ErrorResponse("Opponent uesrname was not found.")); 
+                return BadRequest(new ErrorResponse("Create new game failed. Opponent username was not found.")); 
             }
             var username = User.FindFirstValue(ClaimTypes.Name);
+            if (request.OpponentUsername == username)
+            {
+                return BadRequest(new ErrorResponse("Create new game failed. You cannot play against yourself."));
+            }
             if (request.Colour == "White")
             {
                 if (!_liveChessGameService.CreateNewGame(username, request.OpponentUsername, request.StartTime, request.Increment))
                 {
-                    return BadRequest(new ErrorResponse("A user is already in a game"));
+                    return BadRequest(new ErrorResponse("Create new game failed. A user is already in a game."));
                 }
                 return Created();
             }
@@ -87,7 +91,7 @@ namespace ChessServer.Controllers
             {
                 if (!_liveChessGameService.CreateNewGame(request.OpponentUsername, username, request.StartTime, request.Increment))
                 {
-                    return BadRequest(new ErrorResponse(""));
+                    return BadRequest(new ErrorResponse("Create new game failed. A user is already in a game."));
                 }
                 return Created();
             }

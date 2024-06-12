@@ -5,11 +5,11 @@ namespace ChessServer.Interfaces
 {
     public interface ILiveChessGameRepository
     {
-        LiveChessGame GetLiveChessGameById(int gameId);
-        LiveChessGame GetLiveChessGameByUsername(string username);
+        LiveChessGame GetLiveChessGameById(int? gameId);
         bool FinishGame(LiveChessGame liveChessGame, string result, string gameEndReason);
-        bool CreateLiveChessGame(LiveChessGame liveChessGame, User whitePlayer, User blackPlayer);
-        bool UpdateLiveChessGame(LiveChessGame liveChessGame, string fen, string new_move, bool increment_turn);
+        bool UpdateGameTime(LiveChessGame liveChessGame, TimeSpan increment);
+        bool CreateLiveChessGame(LiveChessGame liveChessGame);
+        bool UpdateLiveChessGame(LiveChessGame liveChessGame, string fen, string new_move);
         bool Save();
     }
 }

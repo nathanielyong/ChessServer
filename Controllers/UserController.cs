@@ -16,7 +16,7 @@ namespace ChessServer.Controllers
             _userRepository = userRepository;
         }
 
-        [HttpGet("/profile"), Authorize]
+        [HttpGet("profile"), Authorize]
         public IActionResult GetProfile()
         {
             var username = User.FindFirstValue(ClaimTypes.Name);
@@ -32,13 +32,14 @@ namespace ChessServer.Controllers
                 Losses = user.Losses,
                 Draws = user.Draws,
                 DatedJoined = user.DateJoined,
-                LiveChessGameId = user.LiveChessGameId
+                LiveChessGameId = user.LiveChessGameId,
+                IsPlaying = user.IsPlaying
             };
 
             return Ok(user_info);
         }
 
-        [HttpGet("/getStats/{username}")]
+        [HttpGet("getStats/{username}")]
         [ProducesResponseType(200, Type = typeof(User))]
         public IActionResult GetUserStats(string username)
         {
@@ -57,7 +58,8 @@ namespace ChessServer.Controllers
                 Losses = user.Losses,
                 Draws = user.Draws,
                 DatedJoined = user.DateJoined,
-                LiveChessGameId = user.LiveChessGameId
+                LiveChessGameId = user.LiveChessGameId,
+                IsPlaying = user.IsPlaying
             };
             return Ok(stats);
         }

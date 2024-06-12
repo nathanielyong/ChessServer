@@ -18,18 +18,19 @@ namespace ChessServer.Services
             _liveChessGameRepository = liveChessGameRepository;
         }
 
-        public bool CreateNewGame(string whitePlayerUsername,  string blackPlayerUsername, int startTime, int increment)
+        public bool CreateNewGame(string whitePlayerUsername, string blackPlayerUsername, int startTime, int increment)
         {
             User whitePlayer = _userRepository.GetUserByUsername(whitePlayerUsername);
             User blackPlayer = _userRepository.GetUserByUsername(blackPlayerUsername);
 
-            if (whitePlayer == null || blackPlayer == null || whitePlayer.LiveChessGameId != null || blackPlayer.LiveChessGameId != null || whitePlayerUsername == blackPlayerUsername)
+            if (whitePlayer == null || blackPlayer == null || whitePlayer.IsPlaying || blackPlayer.IsPlaying || whitePlayerUsername == blackPlayerUsername)
             {
                 return false;
             }
-
-            LiveChessGame liveChessGame = new LiveChessGame(whitePlayer.Id, whitePlayerUsername, blackPlayer.Id, blackPlayerUsername, startTime, increment);
-            if (_liveChessGameRepository.CreateLiveChessGame(liveChessGame, whitePlayer, blackPlayer)) { 
+            TimeSpan startTimeSpan = TimeSpan.FromMinutes(startTime);
+            TimeSpan incrementTimeSpan = TimeSpan.FromSeconds(increment);
+            LiveChessGame liveChessGame = new LiveChessGame(whitePlayer.Id, whitePlayerUsername, blackPlayer.Id, blackPlayerUsername, startTimeSpan, incrementTimeSpan);
+            if (_liveChessGameRepository.CreateLiveChessGame(liveChessGame)) { 
                 return true;
             }
             return false;
@@ -46,8 +47,8 @@ namespace ChessServer.Services
 
         public LiveChessGameResponse GetGameState(string username)
         {
-
-            LiveChessGame game = _liveChessGameRepository.GetLiveChessGameByUsername(username);
+            User player = _userRepository.GetUserByUsername(username);
+            LiveChessGame game = _liveChessGameRepository.GetLiveChessGameById(player.LiveChessGameId);
             if (game == null)
             {
                 return null;
@@ -57,32 +58,30 @@ namespace ChessServer.Services
 
         public LiveChessGameResponse ResignGame(string username)
         {
-            LiveChessGame game = _liveChessGameRepository.GetLiveChessGameByUsername(username);
+            User player = _userRepository.GetUserByUsername(username);
+            LiveChessGame game = _liveChessGameRepository.GetLiveChessGameById(player.LiveChessGameId);
             if (game == null)
             {
                 return null;
             }
             var colour_won = username == game.WhitePlayerUsername ? "Black" : "White";
             var result = username == game.WhitePlayerUsername ? "0-1" : "1-0";
-
-            User whitePlayer = _userRepository.GetUserById(game.WhitePlayerId);
-            User blackPlayer = _userRepository.GetUserById(game.BlackPlayerId);
+            _liveChessGameRepository.UpdateGameTime(game, TimeSpan.Zero);
             _liveChessGameRepository.FinishGame(game, result, $"{colour_won} won by resignation.");
-            _chessGameRepository.CreateChessGame(new ChessGame(game), whitePlayer, blackPlayer);
-            return new LiveChessGameResponse(game, $"Game has ended. {colour_won} won by resignation.");
+            return new LiveChessGameResponse(game, $"Game has ended. {game.GameEndReason}");
         }
 
         public LiveChessGameResponse MakeMove(string username, string move_string)
         {
-            LiveChessGame liveChessGame = _liveChessGameRepository.GetLiveChessGameByUsername(username);
+            User player = _userRepository.GetUserByUsername(username);
+            LiveChessGame liveChessGame = _liveChessGameRepository.GetLiveChessGameById(player.LiveChessGameId);
             if (liveChessGame == null)
             {
                 return null;
             }
-            if (liveChessGame.Result != null)
+            if (liveChessGame.Result != "")
             {
-                User user = _userRepository.GetUserByUsername(username);
-                user.LiveChessGameId = null;
+                player.LiveChessGameId = null;
                 return new LiveChessGameResponse(liveChessGame, liveChessGame.GameEndReason);
             }
 
@@ -94,37 +93,39 @@ namespace ChessServer.Services
             }
 
             string[] move_squares = move_string.Split('-');
+            if (move_squares.Length != 2)
+            {
+                return new LiveChessGameResponse(liveChessGame, "Move format invalid.");
+            }
             var move = new Move(move_squares[0], move_squares[1]);
-            if (!board.IsValidMove(move))
+            try
+            {
+                if (!board.IsValidMove(move))
+                {
+                    return new LiveChessGameResponse(liveChessGame, "Move is illegal.");
+                }
+            }
+            catch (Exception e)
             {
                 return new LiveChessGameResponse(liveChessGame, "Move is illegal.");
             }
 
             board.Move(move);
-            string[] pgn = board.ToPgn().Split(' ');
-            string new_move = (liveChessGame.IsWhiteTurn ? $"{liveChessGame.MoveCount}. " : "") + pgn[pgn.Length - 1] + " ";
-            if (liveChessGame.IsWhiteTurn) {
-                string pgn_add = $"{liveChessGame.MoveCount}. ";
-            }
-
-            _liveChessGameRepository.UpdateLiveChessGame(liveChessGame, board.ToFen(), new_move, !liveChessGame.IsWhiteTurn);
+            string new_move = (liveChessGame.IsWhiteTurn ? $"{liveChessGame.MoveCount}. " : "") + board.MovesToSan[board.MovesToSan.Count - 1] + " ";
+            _liveChessGameRepository.UpdateLiveChessGame(liveChessGame, board.ToFen(), new_move);
             
             if (board.EndGame != null)
             {
                 var result = board.EndGame.WonSide;
-                User whitePlayer = _userRepository.GetUserById(liveChessGame.WhitePlayerId);
-                User blackPlayer = _userRepository.GetUserById(liveChessGame.BlackPlayerId);
                 if (result != null)
                 {
-                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result.ToString()} won by checkmate.");
-                    _chessGameRepository.CreateChessGame(new ChessGame(liveChessGame), whitePlayer, blackPlayer);
-                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. {result.ToString()} won by checkmate.");
+                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result} won by checkmate.");
+                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. {liveChessGame.GameEndReason}");
                 }
                 else
                 {
                     _liveChessGameRepository.FinishGame(liveChessGame, "1/2-1/2", $"Draw by {board.EndGame.EndgameType}");
-                    _chessGameRepository.CreateChessGame(new ChessGame(liveChessGame), whitePlayer, blackPlayer);
-                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. Draw by {board.EndGame.EndgameType}");
+                    return new LiveChessGameResponse(liveChessGame, $"Game has ended. {liveChessGame.GameEndReason}");
                 }
             }
             return new LiveChessGameResponse(liveChessGame, "Move executed successfully.");

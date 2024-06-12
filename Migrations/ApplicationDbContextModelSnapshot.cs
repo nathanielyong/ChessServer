@@ -43,6 +43,10 @@ namespace ChessServer.Migrations
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FinalFEN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("GameEndReason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -105,14 +109,18 @@ namespace ChessServer.Migrations
                     b.Property<DateTime>("DateLastMove")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("DateLastUpdate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GameEndReason")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Increment")
-                        .HasColumnType("int");
+                    b.Property<TimeSpan>("Increment")
+                        .HasColumnType("time");
 
                     b.Property<bool>("IsWhiteTurn")
                         .HasColumnType("bit");
@@ -124,11 +132,15 @@ namespace ChessServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Result")
+                    b.Property<string>("PrevMove")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StartTime")
-                        .HasColumnType("int");
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
 
                     b.Property<int>("WhitePlayerId")
                         .HasColumnType("int");
@@ -166,6 +178,9 @@ namespace ChessServer.Migrations
                     b.Property<string>("HashedPassword")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPlaying")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("LiveChessGameId")
                         .HasColumnType("int");

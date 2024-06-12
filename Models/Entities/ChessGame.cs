@@ -19,13 +19,14 @@ namespace ChessServer.Models.Entities
         public int StartTime { get; set; }
         public int Increment { get; set; }
         public string PGN { get; set; }
+        public string FinalFEN {  get; set; }
 
         public ChessGame()
         {
 
         }
         public ChessGame(int whitePlayerId, string whitePlayerUsername, int blackPlayerId, string blackPlayerUsername,
-                         DateTime dateStarted, DateTime dateFinished, string result, int startTime, int increment, string pgn, string gameEndReason, int moves)
+                         DateTime dateStarted, DateTime dateFinished, string result, int startTime, int increment, string pgn, string gameEndReason, int moves, string finalFEN)
         {
             WhitePlayerId = whitePlayerId;
             WhitePlayerUsername = whitePlayerUsername;
@@ -39,6 +40,7 @@ namespace ChessServer.Models.Entities
             PGN = pgn;
             GameEndReason = gameEndReason;
             Moves = moves;
+            FinalFEN = finalFEN;
         }
 
         public ChessGame(LiveChessGame liveChessGame)
@@ -51,10 +53,11 @@ namespace ChessServer.Models.Entities
             DateFinished = DateTime.UtcNow;
             Result = liveChessGame.Result;
             GameEndReason = liveChessGame.GameEndReason;
-            Moves = liveChessGame.MoveCount;
-            StartTime = liveChessGame.StartTime;
-            Increment = liveChessGame.Increment;
+            Moves = liveChessGame.MoveCount - (liveChessGame.IsWhiteTurn ? 1 : 0);
+            StartTime = liveChessGame.StartTime.Minutes;
+            Increment = liveChessGame.Increment.Seconds;
             PGN = liveChessGame.PGN;
+            FinalFEN = liveChessGame.CurrentPositionFen;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace ChessServer.Models.Responses
         public string Message { get; set; }
         public GameStateResponse GameState { get; set; }
         public class GameStateResponse { 
+            public int Id { get; set; }
             public string WhitePlayerUsername { get; set; }
             public string BlackPlayerUsername { get; set; }
             public int StartTime {  get; set; }
@@ -17,9 +18,11 @@ namespace ChessServer.Models.Responses
             public int WhiteSecondsRemaining {  get; set; }
             public int BlackMinutesRemaining {  get; set; }
             public int BlackSecondsRemaining { get; set; }
-            public bool IsWhiteTurn {  get; set; }
+            public bool IsWhiteTurn { get; set; }
             public string GameEndReason { get; set; }
+            public string? Result { get; set; }
             public DateTime DateLastMove {  get; set; }
+            public string? PrevMove {  get; set; }
             public string CurrentPositionFEN {  get; set; }
             public string PGN { get; set; }
             public int MoveCount {  get; set; }
@@ -27,10 +30,11 @@ namespace ChessServer.Models.Responses
 
             public GameStateResponse(LiveChessGame liveChessGame)
             {
+                Id = liveChessGame.Id;
                 WhitePlayerUsername = liveChessGame.WhitePlayerUsername;
                 BlackPlayerUsername = liveChessGame.BlackPlayerUsername;
-                StartTime = liveChessGame.StartTime;
-                Increment = liveChessGame.Increment;
+                StartTime = (int)liveChessGame.StartTime.TotalMinutes;
+                Increment = (int)liveChessGame.Increment.TotalSeconds;
                 DateStarted = liveChessGame.DateStarted;
                 TimeSpan whiteTimeRemaining = liveChessGame.WhiteTimeRemaining;
                 TimeSpan blackTimeRemaining = liveChessGame.BlackTimeRemaining;
@@ -39,8 +43,10 @@ namespace ChessServer.Models.Responses
                 BlackMinutesRemaining = blackTimeRemaining.Minutes;
                 BlackSecondsRemaining = blackTimeRemaining.Seconds;
                 IsWhiteTurn = liveChessGame.IsWhiteTurn;
+                Result = liveChessGame.Result;
                 GameEndReason = liveChessGame.GameEndReason;
                 DateLastMove = liveChessGame.DateLastMove;
+                PrevMove = liveChessGame.PrevMove;
                 CurrentPositionFEN = liveChessGame.CurrentPositionFen;
                 PGN = liveChessGame.PGN;
                 MoveCount = liveChessGame.MoveCount;
