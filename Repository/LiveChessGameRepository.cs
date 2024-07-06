@@ -27,43 +27,29 @@ namespace ChessServer.Repository
             {
                 return null;
             }
-            UpdateGameTime(liveChessGame, TimeSpan.Zero);
-            return liveChessGame;
-        }
-        public bool UpdateGameTime(LiveChessGame liveChessGame, TimeSpan increment)
-        {
-            if (liveChessGame.Result == "") { 
-                TimeSpan moveTime = DateTime.UtcNow - liveChessGame.DateLastUpdate;
+            if (liveChessGame.MoveCount > 1 && liveChessGame.Result == "")
+            {
+                TimeSpan time = DateTime.UtcNow - liveChessGame.DateLastMove;
                 if (liveChessGame.IsWhiteTurn)
                 {
-                    if (moveTime > liveChessGame.WhiteTimeRemaining)
+                    if (time > liveChessGame.WhiteTimeRemaining)
                     {
                         liveChessGame.WhiteTimeRemaining = TimeSpan.Zero;
                         FinishGame(liveChessGame, "0-1", "Black wins on time.");
                     }
-                    else
-                    {
-                        TimeSpan newTimeSpan = liveChessGame.WhiteTimeRemaining.Subtract(moveTime);
-                        liveChessGame.WhiteTimeRemaining = newTimeSpan.Add(increment);
-                    }
                 }
                 else
                 {
-                    if (moveTime > liveChessGame.BlackTimeRemaining)
+                    if (time > liveChessGame.BlackTimeRemaining)
                     {
                         liveChessGame.BlackTimeRemaining = TimeSpan.Zero;
                         FinishGame(liveChessGame, "1-0", "White wins on time.");
                     }
-                    else
-                    {
-                        TimeSpan newTimeSpan = liveChessGame.BlackTimeRemaining.Subtract(moveTime);
-                        liveChessGame.BlackTimeRemaining = newTimeSpan.Add(increment);
-                    }
                 }
-                liveChessGame.DateLastUpdate = DateTime.UtcNow;
             }
-            return Save();
+            return liveChessGame;
         }
+
         public bool FinishGame(LiveChessGame liveChessGame, string result, string gameEndReason)
         {
             if (liveChessGame.Result != "")
@@ -98,12 +84,39 @@ namespace ChessServer.Repository
 
         public bool UpdateLiveChessGame(LiveChessGame liveChessGame, string fen, string new_move)
         {
-            UpdateGameTime(liveChessGame, liveChessGame.Increment);
+            if (liveChessGame.MoveCount > 1)
+            {
+                TimeSpan moveTime = DateTime.UtcNow - liveChessGame.DateLastMove;
+                if (liveChessGame.IsWhiteTurn)
+                {
+                    if (moveTime > liveChessGame.WhiteTimeRemaining)
+                    {
+                        liveChessGame.WhiteTimeRemaining = TimeSpan.Zero;
+                        FinishGame(liveChessGame, "0-1", "Black wins on time.");
+                    }
+                    else
+                    {
+                        liveChessGame.WhiteTimeRemaining = liveChessGame.WhiteTimeRemaining.Subtract(moveTime).Add(liveChessGame.Increment);
+                    }
+                }
+                else
+                {
+                    if (moveTime > liveChessGame.BlackTimeRemaining)
+                    {
+                        liveChessGame.BlackTimeRemaining = TimeSpan.Zero;
+                        FinishGame(liveChessGame, "1-0", "White wins on time.");
+                    }
+                    else
+                    {
+                        liveChessGame.BlackTimeRemaining = liveChessGame.BlackTimeRemaining.Subtract(moveTime).Add(liveChessGame.Increment);
+                    }
+                }
+            }
+            liveChessGame.DateLastMove = DateTime.UtcNow;
             liveChessGame.CurrentPositionFen = fen;
             liveChessGame.PrevMove = new_move;
             liveChessGame.PGN += new_move;
             liveChessGame.IsWhiteTurn = !liveChessGame.IsWhiteTurn;
-            liveChessGame.DateLastMove = DateTime.UtcNow;
             if (liveChessGame.IsWhiteTurn)
             {
                 liveChessGame.MoveCount++;

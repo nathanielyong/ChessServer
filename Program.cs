@@ -22,7 +22,7 @@ builder.Services.AddScoped<ILiveChessGameRepository, LiveChessGameRepository>();
 builder.Services.AddScoped<ILiveChessGameService, LiveChessGameService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt =>
+/*builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
     opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(opt =>
             new string[]{}
         }
     });
-});
+});*/
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));

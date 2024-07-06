@@ -66,7 +66,6 @@ namespace ChessServer.Services
             }
             var colour_won = username == game.WhitePlayerUsername ? "Black" : "White";
             var result = username == game.WhitePlayerUsername ? "0-1" : "1-0";
-            _liveChessGameRepository.UpdateGameTime(game, TimeSpan.Zero);
             _liveChessGameRepository.FinishGame(game, result, $"{colour_won} won by resignation.");
             return new LiveChessGameResponse(game, $"Game has ended. {game.GameEndReason}");
         }
