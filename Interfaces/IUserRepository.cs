@@ -1,4 +1,5 @@
 ﻿using ChessServer.Models.Entities;
+using ChessServer.Models.Requests;
 
 namespace ChessServer.Interfaces
 {

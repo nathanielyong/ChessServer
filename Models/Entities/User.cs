@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Azure.Core;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 
 namespace ChessServer.Models.Entities
@@ -22,11 +23,11 @@ namespace ChessServer.Models.Entities
         public User()
         {
         }
-        public User(string username, string email, string hashedPassword)
+        public User(string username, string email, string password)
         {
             Username = username;
             Email = email;
-            HashedPassword = hashedPassword;
+            HashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
             WhiteChessGames = new List<ChessGame>();
             BlackChessGames = new List<ChessGame>();
             DateJoined = DateTime.UtcNow;
