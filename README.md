@@ -8,7 +8,7 @@ You can test out endpoints using this URL: https://chessservernathan.azurewebsit
 
 ## Features
 
-Game Management: Create, retrieve, update, and delete chess games.
+Chess Game Storage and Management: Create, retrieve, update, and delete chess games.
 
 Live Chess Games: Start new game with opponent, Make move, Resign, Check game state, Get valid moves, Store game into game history
 
