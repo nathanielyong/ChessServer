@@ -1,0 +1,51 @@
+.chess-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.timers {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.timer {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    width: 100px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    width: 200px;
+    height: 300px;
+    text-align: center;
+}
+
+.resign {
+    padding: 0.7em;
+    color: #fff;
+    background-color: red;
+    border: none;
+    width: 60%;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.resign:hover {
+    background-color: #cc0000;
+}

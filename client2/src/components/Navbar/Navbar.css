@@ -1,0 +1,11 @@
+.button {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    height: 100%;
+    font-weight: bold;
+}
+
+.navbar {
+    height: 60px;
+}
+
