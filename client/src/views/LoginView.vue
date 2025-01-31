@@ -18,6 +18,7 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 
 export default {
   data() {
@@ -28,21 +29,18 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['login']),
     async handleLogin() {
       try {
-        const response = await axios.post("/Auth/login", {
+        const response = await axios.post("/api/Auth/login", {
           username: this.username,
           password: this.password
         })
         console.log(response)
         const token = response.data
-        localStorage.setItem('jwtToken', token)
-        window.dispatchEvent(new CustomEvent('login', {
-          detail: {
-            storage: localStorage.getItem('jwtToken')
-          }
-        }));
-        this.$router.push('/home')
+        this.login(token)
+        console.log(token)
+        this.$router.push('/')
       } catch (err) {
         console.log(err)
         this.errorMessage = err.response.data;

@@ -1,6 +1,6 @@
 <template>
   <div class="request-form">
-    <h2>Create New Game</h2>
+    <h2>Create New Challenge</h2>
     <form @submit.prevent="handleNewGameRequest">
       <div class="form-group">
         <label for="colour">Piece Colour</label>
@@ -23,7 +23,7 @@
         <input type="number" v-model="increment">
       </div>
       <div v-if="error" class="error-message">{{ error }}</div>
-      <button type="submit">Create Game</button>
+      <button type="submit">Send Challenge</button>
     </form>
   </div>
 </template>

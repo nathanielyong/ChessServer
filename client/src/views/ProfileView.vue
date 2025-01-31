@@ -47,6 +47,8 @@
 </template>
 <script>
 import axiosInstance from "@/axiosConfig";
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
     data() {
         return {
@@ -62,6 +64,9 @@ export default {
             losses: 0,
             games: {}
         }
+    },
+    computed: {
+        ...mapGetters(['isAuthenticated', 'getToken']),
     },
     mounted() {
         this.fetchProfile()

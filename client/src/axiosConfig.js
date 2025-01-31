@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from './store'
 
 const instance = axios.create({
     baseUrl: ''
@@ -6,7 +7,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('jwtToken'); 
+        const token = store.getters.getToken;
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
