@@ -2,10 +2,11 @@
 using ChessServer.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ChessServer.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChessServer.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : Controller
     {
@@ -63,6 +64,13 @@ namespace ChessServer.Controllers
 
             string token = _authService.Login(user);
             return Ok(token);
+        }
+
+        [Authorize] 
+        [HttpGet("validateToken")]
+        public IActionResult ValidateToken()
+        {
+            return Ok();
         }
     }
 }

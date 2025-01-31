@@ -9,5 +9,6 @@ namespace ChessServer.Interfaces
         LiveChessGameResponse GetGameState(string username);
         LiveChessGameResponse MakeMove(string username, string move);
         LiveChessGameResponse ResignGame(string username);
+        LiveChessGameResponse DrawGame(string username);
     }
 }

@@ -66,7 +66,19 @@ namespace ChessServer.Services
             }
             var colour_won = username == game.WhitePlayerUsername ? "Black" : "White";
             var result = username == game.WhitePlayerUsername ? "0-1" : "1-0";
-            _liveChessGameRepository.FinishGame(game, result, $"{colour_won} won by resignation.");
+            _liveChessGameRepository.FinishGame(game, result, $"{colour_won} won by resignation");
+            return new LiveChessGameResponse(game, $"Game has ended. {game.GameEndReason}");
+        }
+
+        public LiveChessGameResponse DrawGame(string username)
+        {
+            User player = _userRepository.GetUserByUsername(username);
+            LiveChessGame game = _liveChessGameRepository.GetLiveChessGameById(player.LiveChessGameId);
+            if (game == null)
+            {
+                return null;
+            }
+            _liveChessGameRepository.FinishGame(game, "1/2-1/2", $"Draw by mutual agreement");
             return new LiveChessGameResponse(game, $"Game has ended. {game.GameEndReason}");
         }
 
@@ -88,25 +100,25 @@ namespace ChessServer.Services
             var player_colour = username == liveChessGame.WhitePlayerUsername ? PieceColor.White : PieceColor.Black;
             if (player_colour != board.Turn)
             {
-                return new LiveChessGameResponse(liveChessGame, "It is not your turn.");
+                return new LiveChessGameResponse(liveChessGame, "It is not your turn");
             }
 
             string[] move_squares = move_string.Split('-');
             if (move_squares.Length != 2)
             {
-                return new LiveChessGameResponse(liveChessGame, "Move format invalid.");
+                return new LiveChessGameResponse(liveChessGame, "Move format invalid");
             }
             var move = new Move(move_squares[0], move_squares[1]);
             try
             {
                 if (!board.IsValidMove(move))
                 {
-                    return new LiveChessGameResponse(liveChessGame, "Move is illegal.");
+                    return new LiveChessGameResponse(liveChessGame, "Move is illegal");
                 }
             }
             catch (Exception e)
             {
-                return new LiveChessGameResponse(liveChessGame, "Move is illegal.");
+                return new LiveChessGameResponse(liveChessGame, "Move is illegal");
             }
 
             board.Move(move);
@@ -118,7 +130,7 @@ namespace ChessServer.Services
                 var result = board.EndGame.WonSide;
                 if (result != null)
                 {
-                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result} won by checkmate.");
+                    _liveChessGameRepository.FinishGame(liveChessGame, result == PieceColor.White ? "1-0" : "0-1", $"{result} won by checkmate");
                     return new LiveChessGameResponse(liveChessGame, $"Game has ended. {liveChessGame.GameEndReason}");
                 }
                 else
@@ -127,7 +139,7 @@ namespace ChessServer.Services
                     return new LiveChessGameResponse(liveChessGame, $"Game has ended. {liveChessGame.GameEndReason}");
                 }
             }
-            return new LiveChessGameResponse(liveChessGame, "Move executed successfully.");
+            return new LiveChessGameResponse(liveChessGame, "Move executed successfully");
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChessServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250118225232_InitialCreate")]
+    [Migration("20250125154759_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

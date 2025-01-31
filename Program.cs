@@ -65,14 +65,14 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 builder.Configuration.GetSection("JwtSettings:Token").Value!))
     };
-        options.Events = new JwtBearerEvents
+    options.Events = new JwtBearerEvents
     {
         OnMessageReceived = context =>
         {
             var accessToken = context.Request.Query["access_token"];
 
             var path = context.HttpContext.Request.Path;
-            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chess")) 
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chess"))
             {
                 context.Token = accessToken;
             }
@@ -83,7 +83,6 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 builder.Services.AddSignalR();
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
