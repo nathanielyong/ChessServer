@@ -1,95 +1,48 @@
-# Chess Server
+# Chess Arena
 
-This Chess Server API is built using ASP.NET Core Web API and provides endpoints for managing chess games, live chess games, and players. This project makes use of clean architecture and SOLID principles by dividing the application into different layers and making use of dependency injection. 
+Chess Arena is a full-stack chess website built with ASP.NET backend and React.js frontend. This project makes use of clean architecture and SOLID principles to ensure scalability, maintainability, and high-quality code. 
 
-The API was deployed to Azure using Azure App Service and Azure SQL Database.
+You can check the website out here
+[ChessArena](chessservernathan2-hzh6a4hsbjfxabhf.canadacentral-01.azurewebsites.net)
 
-You can test out endpoints using this URL: https://chessservernathan.azurewebsites.net
+![image](https://github.com/user-attachments/assets/8a336e5e-cec3-495a-87b6-9c5b1bf8caf2)
 
 ## Features
 
-Game Management: Create, retrieve, update, and delete chess games.
+- Live Chess Games:
+    - Start new game with opponent, Make move, Resign, Offer draw, Accept/Decline draw offer, Live chat with opponent.
+    - Check game state, Get valid moves, Finish game and store into game history.
+  
+- Game Management: Create, retrieve, update, and delete completed chess games.
 
-Live Chess Games: Start new game with opponent, Make move, Resign, Check game state, Get valid moves, Store game into game history
+- Player Management: Register, login, retrieve player information, and update player profiles.
 
-Player Management: Register, login, retrieve player information, and update player profiles.
+- Authentication and Authorization: Secure endpoints using JWT (JSON Web Tokens) for authentication 
 
-Authentication and Authorization: Secure endpoints using JWT (JSON Web Tokens) for authentication 
+## Installation
 
-## Endpoints
+1. Install .NET 8.0 SDK https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+2. Install Node.js
+3. Clone the repository
 
-### Auth controller
+### Frontend
 
-POST /register\
-Example:
-{
-  "username": "user",
-  "email": "user@example.com",
-  "password": "password"
-}
+4. cd into the `client` folder
+5. Run `npm install` to install the frontend dependencies
+6. Run `npm run build` to build the files for production
 
-POST /login\
-Example: 
-{
-  "username": "user",
-  "password": "password"
-}
+### Backend
 
-### ChessGame controller
+7. Go back to the root folder
+8. Run `dotnet restore` to install the .NET dependencies
+9. Run `dotnet run` to build and start up the backend
 
-Endpoints for retrieving game history or creating a new chess game record.
+### Database
 
-GET /api/ChessGame/myGames
-
-GET /api/ChessGame/user/{username}/whiteGames
-
-GET /api/ChessGame/user/{username}/blackGames
-
-GET /api/ChessGame/user/{username}/games
-
-GET /api/ChessGame/{id}
-
-POST /api/ChessGame/createGame\
-Example: 
-{
-  "whitePlayerUsername": "user1",
-  "blackPlayerUsername": "user2",
-  "dateStarted": "2024-05-08",
-  "dateFinished": "2024-05-08",
-  "result": "1-0",
-  "gameEndReason": "White wins by resignation",
-  "moves": 1,
-  "startTime": 90,
-  "increment": 30,
-  "pgn": "1. e4 e5"
-}
-
-### LiveChessGame controller
-Endpoints for creating new Live Chess Game or playing moves on a current game.
-
-GET /api/LiveChessGame/getGame/{id}
-
-GET /api/LiveChessGame/getCurrentGame\
-Info: Returns the current game state information including the current position and legal moves.
-
-POST /api/LiveChessGame/makeMove?move={e4}
-
-POST /api/LiveChessGame/resignGame
-
-POST /api/LiveChessGame/newGame\
-Example:
-{
-  "colour": "White",
-  "opponentUsername": "user",
-  "startTime": 90,
-  "increment": 30
-}\
-Info: Creates a new game with opponent username unless opponent user is already in a game.
-
-### User controller
-
-
-GET /profile
-
-GET /getStats/{username}
+10. You may need to provision your own SQL Server database in order to use this application locally. O
+    - On MacOS, you can install Docker Desktop and run a SQL Server container image https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&tabs=cli&pivots=cs1-bash
+    - On Windows, you can simply install SQL Server
+11. Once you've created a SQL Server database, you can connect it to ASP.NET by going to appsettings.json and replacing the `"DefaultConnection"` string field with your own connection string.
+12. In the root folder, run `dotnet ef migrations add InitialCreate` to create a new database migration based on the models.
+13. Update the database using `dotnet ef database update`
 
