@@ -39,7 +39,7 @@ You can check the website out here
 
 ### Database
 
-10. You may need to provision your own SQL Server database in order to use this application locally. O
+10. You may need to provision your own SQL Server database in order to use this application locally.
     - On MacOS, you can install Docker Desktop and run a SQL Server container image https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&tabs=cli&pivots=cs1-bash
     - On Windows, you can simply install SQL Server
 11. Once you've created a SQL Server database, you can connect it to ASP.NET by going to appsettings.json and replacing the `"DefaultConnection"` string field with your own connection string.
